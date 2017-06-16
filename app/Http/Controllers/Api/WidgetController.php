@@ -15,7 +15,7 @@ class WidgetController extends Controller
      */
     public function index()
     {
-        //
+        return Widget::all();
     }
 
     /**
@@ -47,7 +47,7 @@ class WidgetController extends Controller
      */
     public function show(Widget $widget)
     {
-        //
+        return $widget;
     }
 
     /**

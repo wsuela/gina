@@ -1,8 +1,8 @@
 <template>
 	<div id="main">
-		<slot></slot>
-		<Launcher />
 		<Widgets/>
+		<Launcher />
+		
 	</div>
 </template>
 

@@ -3,7 +3,15 @@
         <nav class="icon-container">
             <ul>
                 <li v-for="widget in widgets">
-                    <div v-on:click="launchWidget(widget)" >{{widget.name}}</div>
+                    <div 
+                    v-on:click="launchWidget(widget)" 
+                    :class="widgetClass(widget)" 
+                    >
+                        <div class="widget-icon">
+                            <i :class="['fa','fa-'+(widget.icon||'code')]"></i>
+                        </div>
+                        <div class="widget-name">{{widget.name}}</div>
+                    </div>
                 </li>
             </ul>    
         </nav>
@@ -15,8 +23,22 @@
 
         methods: {
             launchWidget(widget) {
-                this.$store.dispatch('addWidget',widget);
-            }
+                let windowState = 'open';
+
+                if (widget.state && !['close','minimize'].includes(widget.state)) {
+                    windowState = 'minimize';
+                }
+
+                this.$store.dispatch('setState', {widget,windowState});
+                
+            },
+            widgetClass (widget) {
+                return [
+                    'widget', 
+                    'state-' + widget.state,
+                    (widget.active ? 'active' : '')
+                ]
+            },
         },
 
         data() {
@@ -37,6 +59,7 @@
         left: 0;
         width: 75px;
         height: 100%;
+        z-index: 300;
         .icon-container{
             align-items: center;
             display: flex;
@@ -60,11 +83,49 @@
                 margin-bottom: 0;
             }
 
-            > div {
+            .widget {
                 width: 64px;
                 height: 64px;
-                outline: 1px solid $navbar-default-border;
+                border: 1px solid transparent;
+                position: relative;
+
+                &.state-restore,
+                &.state-maximize,
+                &.state-minimize,
+                &.state-open {
+                    border-color: $navbar-default-border;
+                }
+
+                &.active {
+                    border-color: #999;
+                }
+                
+                .widget-icon {
+                    font-size:50px;
+                    text-align:center;
+                    line-height:62px;
+                }
+                .widget-name {
+                    display: none;
+                    position: absolute;
+                    height: 32px;
+                    line-height: 32px;
+                    left: 120%;
+                    top: 16px;
+                    white-space: nowrap;
+                    padding: 0 5px;
+                    z-index: 100;
+                    border: 1px solid $navbar-default-border;
+                    background: #fff;
+                }
+                &:hover {
+                    background: $body-bg;
+                    .widget-name {
+                        display: block;
+                    }
+                }
             }
+            
         }
     }
     
